@@ -6,16 +6,29 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     error?: string
 }
 
+let inputIdCounter = 0
+
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, type, label, error, ...props }, ref) => {
+    ({ className, type, label, error, id, ...props }, ref) => {
+        // Generate unique ID if not provided and label exists
+        const generatedId = React.useMemo(() => {
+            if (id) return id
+            if (label) return `input-${++inputIdCounter}`
+            return undefined
+        }, [id, label])
+
         return (
             <div className="w-full">
                 {label && (
-                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                    <label
+                        htmlFor={generatedId}
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
+                    >
                         {label}
                     </label>
                 )}
                 <input
+                    id={generatedId}
                     type={type}
                     className={cn(
                         'flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-base transition-colors',
@@ -27,10 +40,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         className
                     )}
                     ref={ref}
+                    aria-invalid={error ? 'true' : undefined}
+                    aria-describedby={error ? `${generatedId}-error` : undefined}
                     {...props}
                 />
                 {error && (
-                    <p className="mt-1.5 text-sm text-red-500">{error}</p>
+                    <p id={`${generatedId}-error`} className="mt-1.5 text-sm text-red-500" role="alert">
+                        {error}
+                    </p>
                 )}
             </div>
         )
