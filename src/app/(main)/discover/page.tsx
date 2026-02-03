@@ -14,6 +14,58 @@ interface ScoredProfile {
     compatibility: number
 }
 
+// Mock profiles for demo purposes
+const MOCK_PROFILES: Profile[] = [
+    {
+        id: 'mock-1',
+        full_name: 'Ana Clara Oliveira',
+        age: 21,
+        university: 'UFPI',
+        course: 'Engenharia Civil',
+        city_origin: 'São Luís, MA',
+        bio: 'Estudante tranquila, gosto de estudar à noite e manter o ambiente organizado. Procuro dividir apartamento perto do campus!',
+        budget: 800,
+        photos: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'],
+        preferences: { smoker: false, pets: true, party: false, sleep_early: true, clean: true },
+        role: 'student',
+        looking_for: 'roommate',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    },
+    {
+        id: 'mock-2',
+        full_name: 'Lucas Mendes',
+        age: 22,
+        university: 'UFPI',
+        course: 'Ciência da Computação',
+        city_origin: 'Fortaleza, CE',
+        bio: 'Dev e gamer nas horas vagas. Procuro colega de quarto que não se importe com setup de PC no quarto 🎮',
+        budget: 700,
+        photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'],
+        preferences: { smoker: false, pets: false, party: true, sleep_early: false, clean: true },
+        role: 'student',
+        looking_for: 'housing',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    },
+    {
+        id: 'mock-3',
+        full_name: 'Mariana Costa',
+        age: 20,
+        university: 'UESPI',
+        course: 'Medicina',
+        city_origin: 'Teresina, PI',
+        bio: 'Estudante de medicina, rotina puxada mas adoro um café e boas conversas. Organizada e responsável!',
+        budget: 1000,
+        photos: ['https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop'],
+        preferences: { smoker: false, pets: false, party: false, sleep_early: true, clean: true },
+        role: 'student',
+        looking_for: 'roommate',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+    },
+]
+
 export default function DiscoverPage() {
     const supabase = createClient()
     const [scoredProfiles, setScoredProfiles] = useState<ScoredProfile[]>([])
@@ -68,7 +120,24 @@ export default function DiscoverPage() {
 
                 // Apply matching algorithm: Filter + Score + Sort
                 const scored = getCompatibleProfiles(myProfile as Profile, availableProfiles)
-                setScoredProfiles(scored)
+
+                // If no real profiles found, use mock profiles for demo
+                if (scored.length === 0) {
+                    const mockScored = MOCK_PROFILES.map((profile) => ({
+                        profile,
+                        compatibility: Math.floor(Math.random() * 30) + 70, // 70-100% random compatibility
+                    }))
+                    setScoredProfiles(mockScored)
+                } else {
+                    setScoredProfiles(scored)
+                }
+            } else {
+                // No profiles at all, use mock profiles
+                const mockScored = MOCK_PROFILES.map((profile) => ({
+                    profile,
+                    compatibility: Math.floor(Math.random() * 30) + 70,
+                }))
+                setScoredProfiles(mockScored)
             }
             setLoading(false)
         }

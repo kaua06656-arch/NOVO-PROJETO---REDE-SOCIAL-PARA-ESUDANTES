@@ -81,42 +81,44 @@ export default function ListingsPage() {
             ) : (
                 <div className="space-y-3">
                     {listings.map((listing) => (
-                        <Card key={listing.id} className="overflow-hidden">
-                            {/* Image Carousel */}
-                            <div className="relative">
-                                {listing.images && listing.images.length > 0 ? (
-                                    <ImageCarousel
-                                        images={listing.images}
-                                        alt={listing.title}
-                                        aspectRatio="video"
-                                    />
-                                ) : (
-                                    <div className="aspect-video bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-                                        <Building2 className="w-12 h-12 text-zinc-400" />
+                        <Link key={listing.id} href={`/listings/${listing.id}`} className="block">
+                            <Card className="overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+                                {/* Image Carousel */}
+                                <div className="relative">
+                                    {listing.images && listing.images.length > 0 ? (
+                                        <ImageCarousel
+                                            images={listing.images}
+                                            alt={listing.title}
+                                            aspectRatio="video"
+                                        />
+                                    ) : (
+                                        <div className="aspect-video bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+                                            <Building2 className="w-12 h-12 text-zinc-400" />
+                                        </div>
+                                    )}
+                                    <div className="absolute top-2 right-2 bg-white dark:bg-zinc-900 text-emerald-600 font-bold px-3 py-1 rounded-full text-sm z-10">
+                                        R$ {listing.price.toLocaleString('pt-BR')}
                                     </div>
-                                )}
-                                <div className="absolute top-2 right-2 bg-white dark:bg-zinc-900 text-emerald-600 font-bold px-3 py-1 rounded-full text-sm z-10">
-                                    R$ {listing.price.toLocaleString('pt-BR')}
                                 </div>
-                            </div>
-                            {/* Info */}
-                            <div className="p-4">
-                                <h3 className="font-semibold text-zinc-900 dark:text-white mb-1">
-                                    {listing.title}
-                                </h3>
-                                {listing.location && (
-                                    <div className="flex items-center gap-1 text-sm text-zinc-500">
-                                        <MapPin className="w-4 h-4" />
-                                        <span>{listing.location}</span>
-                                    </div>
-                                )}
-                                {listing.description && (
-                                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 line-clamp-2">
-                                        {listing.description}
-                                    </p>
-                                )}
-                            </div>
-                        </Card>
+                                {/* Info */}
+                                <div className="p-4">
+                                    <h3 className="font-semibold text-zinc-900 dark:text-white mb-1">
+                                        {listing.title}
+                                    </h3>
+                                    {listing.location && (
+                                        <div className="flex items-center gap-1 text-sm text-zinc-500">
+                                            <MapPin className="w-4 h-4" />
+                                            <span>{listing.location}</span>
+                                        </div>
+                                    )}
+                                    {listing.description && (
+                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 line-clamp-2">
+                                            {listing.description}
+                                        </p>
+                                    )}
+                                </div>
+                            </Card>
+                        </Link>
                     ))}
                 </div>
             )}
