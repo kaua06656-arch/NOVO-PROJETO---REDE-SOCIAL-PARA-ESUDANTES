@@ -234,8 +234,13 @@ export default function ChatPage() {
                     size="md"
                     className="rounded-full w-11 h-11 p-0"
                     disabled={!newMessage.trim() || sending}
+                    aria-label={sending ? 'Enviando mensagem...' : 'Enviar mensagem'}
                 >
-                    <Send className="w-5 h-5" />
+                    {sending ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <Send className="w-5 h-5" />
+                    )}
                 </Button>
             </form>
         </div>
