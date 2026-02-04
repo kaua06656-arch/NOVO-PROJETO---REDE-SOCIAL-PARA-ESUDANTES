@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Database } from '@/types/database.types'
 import { Loader2, UserCheck, UserX, Users, MessageCircle, Clock } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Connection = Database['public']['Tables']['connections']['Row']
@@ -97,23 +98,29 @@ export default function NetworkPage() {
         setLoading(false)
     }
 
-    const handleAccept = async (connectionId: string) => {
+    const handleAccept = async (connectionId: string, profileName: string) => {
         await supabase
             .from('connections')
             // @ts-expect-error - Supabase types require real database
             .update({ status: 'accepted' })
             .eq('id', connectionId)
 
+        toast.success(`Conexão aceita!`, {
+            description: `Você e ${profileName} agora podem conversar.`,
+        })
         fetchData() // Refresh
     }
 
-    const handleReject = async (connectionId: string) => {
+    const handleReject = async (connectionId: string, profileName: string) => {
         await supabase
             .from('connections')
             // @ts-expect-error - Supabase types require real database
             .update({ status: 'rejected' })
             .eq('id', connectionId)
 
+        toast.info(`Solicitação recusada`, {
+            description: `A solicitação de ${profileName} foi recusada.`,
+        })
         fetchData() // Refresh
     }
 
@@ -216,7 +223,7 @@ export default function NetworkPage() {
                                     <div className="flex gap-2">
                                         <Button
                                             size="sm"
-                                            onClick={() => handleAccept(conn.id)}
+                                            onClick={() => handleAccept(conn.id, conn.profile.full_name || 'Usuário')}
                                         >
                                             <UserCheck className="w-4 h-4 mr-1" />
                                             Aceitar
@@ -224,7 +231,7 @@ export default function NetworkPage() {
                                         <Button
                                             size="sm"
                                             variant="secondary"
-                                            onClick={() => handleReject(conn.id)}
+                                            onClick={() => handleReject(conn.id, conn.profile.full_name || 'Usuário')}
                                         >
                                             <UserX className="w-4 h-4" />
                                         </Button>

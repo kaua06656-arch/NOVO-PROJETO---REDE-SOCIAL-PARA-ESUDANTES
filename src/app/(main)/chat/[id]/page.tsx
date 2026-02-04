@@ -83,8 +83,13 @@ export default function ChatPage() {
                 },
                 (payload) => {
                     const newMessage = payload.new as Message
-                    if (newMessage.sender_id === currentUserId) return
-                    setMessages((prev) => [...prev, newMessage])
+                    // Prevent duplicates: skip if userId not set or if we sent this message
+                    if (!currentUserId || newMessage.sender_id === currentUserId) return
+                    // Also check if message already exists (by ID)
+                    setMessages((prev) => {
+                        if (prev.some(m => m.id === newMessage.id)) return prev
+                        return [...prev, newMessage]
+                    })
                 }
             )
             .subscribe()

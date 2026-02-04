@@ -151,6 +151,15 @@ export default function DiscoverPage() {
 
         const targetProfile = scoredProfiles[currentIndex].profile
 
+        // Check if this is a mock profile (demo mode)
+        if (targetProfile.id.startsWith('mock-')) {
+            toast.info('Perfil de demonstração', {
+                description: 'Este é um perfil de exemplo. Convide amigos para usar o app!',
+            })
+            setCurrentIndex((prev) => prev + 1)
+            return
+        }
+
         // Check if there's already a pending connection from target -> current user
         const { data: existingRequest } = await supabase
             .from('connections')
