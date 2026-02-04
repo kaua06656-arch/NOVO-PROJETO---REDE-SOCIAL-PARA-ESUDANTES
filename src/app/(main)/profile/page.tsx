@@ -208,6 +208,45 @@ export default function ProfilePage() {
                     </CardContent>
                 </Card>
 
+                {/* Preferences */}
+                {preferences && (
+                    <Card>
+                        <CardContent className="pt-5">
+                            <p className="text-sm text-zinc-500 mb-3">Estilo de vida</p>
+                            <div className="flex flex-wrap gap-2">
+                                {preferences.smoker && (
+                                    <span className="px-3 py-1 rounded-full text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                        🚬 Fumante
+                                    </span>
+                                )}
+                                {preferences.pets && (
+                                    <span className="px-3 py-1 rounded-full text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                        🐶 Aceita pets
+                                    </span>
+                                )}
+                                {preferences.party && (
+                                    <span className="px-3 py-1 rounded-full text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                        🎉 Festeiro
+                                    </span>
+                                )}
+                                {preferences.sleep_early && (
+                                    <span className="px-3 py-1 rounded-full text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                        🌙 Dorme cedo
+                                    </span>
+                                )}
+                                {preferences.clean && (
+                                    <span className="px-3 py-1 rounded-full text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                        ✨ Organizado
+                                    </span>
+                                )}
+                                {!preferences.smoker && !preferences.pets && !preferences.party && !preferences.sleep_early && !preferences.clean && (
+                                    <span className="text-sm text-zinc-400">Nenhuma preferência definida</span>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Edit Button */}
                 <Button
                     variant="secondary"

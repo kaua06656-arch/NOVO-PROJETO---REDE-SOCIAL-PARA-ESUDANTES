@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import { ArrowLeft, ArrowRight, Check, Home } from 'lucide-react'
 import type { Database } from '@/types/database.types'
 
 type PreferenceKey = 'smoker' | 'pets' | 'party' | 'sleep_early' | 'clean'
+type Profile = Database['public']['Tables']['profiles']['Row']
 
 const STEPS = [
     { id: 1, title: 'Informações Básicas' },
@@ -23,6 +24,7 @@ export default function OnboardingPage() {
 
     const [step, setStep] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingProfile, setIsLoadingProfile] = useState(true)
 
     // Form state
     const [formData, setFormData] = useState({
@@ -42,6 +44,49 @@ export default function OnboardingPage() {
             clean: false,
         },
     })
+
+    // Load existing profile data
+    useEffect(() => {
+        async function loadExistingProfile() {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) {
+                setIsLoadingProfile(false)
+                return
+            }
+
+            const { data: profileData } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single()
+
+            const profile = profileData as Profile | null
+
+            if (profile) {
+                const prefs = profile.preferences as typeof formData.preferences | null
+                setFormData({
+                    full_name: profile.full_name || '',
+                    university: profile.university || '',
+                    course: profile.course || '',
+                    age: profile.age?.toString() || '',
+                    city_origin: profile.city_origin || '',
+                    budget: profile.budget?.toString() || '',
+                    bio: profile.bio || '',
+                    looking_for: (profile.looking_for as 'roommate' | 'housing') || '',
+                    preferences: prefs || {
+                        smoker: false,
+                        pets: false,
+                        party: false,
+                        sleep_early: false,
+                        clean: false,
+                    },
+                })
+            }
+            setIsLoadingProfile(false)
+        }
+
+        loadExistingProfile()
+    }, [supabase])
 
     const updateField = (field: string, value: string | number | boolean | object) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
