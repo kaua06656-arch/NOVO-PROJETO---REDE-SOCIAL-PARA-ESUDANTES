@@ -28,12 +28,13 @@ export default function ChatPage() {
                 return
             }
 
-            // Fetch accepted connections
+            // Fetch accepted connections, ordered by most recent activity
             const { data: acceptedData } = await supabase
                 .from('connections')
                 .select('*')
                 .eq('status', 'accepted')
                 .or(`requester_id.eq.${user.id},receiver_id.eq.${user.id}`)
+                .order('updated_at', { ascending: false })
 
             // Get profile IDs
             const profileIds = new Set<string>()

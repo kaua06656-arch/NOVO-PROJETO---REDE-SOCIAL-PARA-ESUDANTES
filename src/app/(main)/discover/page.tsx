@@ -6,6 +6,7 @@ import { ProfileCard } from '@/components/features/profile-card'
 import { Database } from '@/types/database.types'
 import { Loader2, Users, UserPlus } from 'lucide-react'
 import { getCompatibleProfiles } from '@/lib/matching/compatibility'
+import { toast } from 'sonner'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -167,7 +168,9 @@ export default function DiscoverPage() {
                 .update({ status: 'accepted' })
                 .eq('id', (existingRequest as { id: string }).id)
 
-            alert(`🎉 Conectado com ${targetProfile.full_name}! Vocês já podem conversar.`)
+            toast.success(`🎉 Conectado com ${targetProfile.full_name}!`, {
+                description: 'Vocês já podem conversar na aba Chat.',
+            })
         } else {
             // Send new connection request
             // @ts-expect-error - Supabase types require real database
@@ -177,7 +180,9 @@ export default function DiscoverPage() {
                 status: 'pending',
             })
 
-            alert(`✅ Solicitação enviada para ${targetProfile.full_name}!`)
+            toast.success(`Solicitação enviada!`, {
+                description: `${targetProfile.full_name} será notificado(a).`,
+            })
         }
 
         setCurrentIndex((prev) => prev + 1)
