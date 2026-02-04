@@ -102,7 +102,7 @@ export default function ListingDetailPage() {
         // Check if already connected
         const { data: existingConnection } = await supabase
             .from('connections')
-            .select('id, status')
+            .select('id, status, requester_id')
             .or(`and(requester_id.eq.${currentUserId},receiver_id.eq.${owner.id}),and(requester_id.eq.${owner.id},receiver_id.eq.${currentUserId})`)
             .single()
 
@@ -113,9 +113,17 @@ export default function ListingDetailPage() {
                 // @ts-expect-error - Type inference issue
                 router.push(`/chat/${existingConnection.id}`)
             } else {
-                toast.info('Solicitação já enviada', {
-                    description: 'Aguarde a resposta do anunciante.',
-                })
+                // @ts-expect-error - Type inference issue
+                const iSentIt = existingConnection.requester_id === currentUserId
+                if (iSentIt) {
+                    toast.info('Solicitação já enviada', {
+                        description: 'Aguarde a resposta do anunciante.',
+                    })
+                } else {
+                    toast.info('Você tem uma solicitação pendente!', {
+                        description: `${owner.full_name} já te enviou uma solicitação. Aceite na aba Rede.`,
+                    })
+                }
             }
             setContacting(false)
             return

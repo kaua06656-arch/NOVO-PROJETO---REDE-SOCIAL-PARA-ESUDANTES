@@ -251,6 +251,12 @@ export default function OnboardingPage() {
                                         </div>
                                     </button>
                                 ))}
+                                {/* Hint when no preferences selected */}
+                                {!Object.values(formData.preferences).some(Boolean) && (
+                                    <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 rounded-lg">
+                                        💡 Dica: Selecione pelo menos uma opção para melhorar suas recomendações!
+                                    </p>
+                                )}
                                 <Input
                                     label="Fale um pouco sobre você"
                                     value={formData.bio}
