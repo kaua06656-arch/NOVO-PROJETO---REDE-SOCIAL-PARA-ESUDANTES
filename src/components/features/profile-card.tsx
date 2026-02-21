@@ -1,4 +1,4 @@
-// aria-label UX helper\nimport { Avatar } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Database } from '@/types/database.types'

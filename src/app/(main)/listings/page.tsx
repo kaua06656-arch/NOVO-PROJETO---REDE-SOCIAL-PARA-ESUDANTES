@@ -1,5 +1,5 @@
 /* <title> | name="description" | property="og: */
-// aria-label UX helper\n'use client'
+'use client'
 
 import { useEffect, useState, useCallback } from 'react'
 import { useServices } from '@/lib/services'

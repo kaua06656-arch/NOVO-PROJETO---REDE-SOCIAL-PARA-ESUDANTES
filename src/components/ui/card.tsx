@@ -1,4 +1,4 @@
-// aria-label UX helper\nimport * as React from 'react'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 type CardProps = React.HTMLAttributes<HTMLDivElement>
