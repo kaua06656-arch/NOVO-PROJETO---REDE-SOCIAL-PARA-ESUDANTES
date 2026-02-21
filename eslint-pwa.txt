@@ -1,0 +1,40 @@
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\network\page.tsx[24m[0m
+[0m  [2m30:35[22m  [31merror[39m    Compilation Skipped: Existing memoization could not be preserved[0m
+[0m[0m
+[0mReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `connectionsService`, but the source dependencies were [supabase]. Inferred different dependency than source.[0m
+[0m[0m
+[0mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\network\page.tsx:30:35[0m
+[0m  28 |     const [sentRequests, setSentRequests] = useState<ConnectionWithProfile[]>([])[0m
+[0m  29 |[0m
+[0m> 30 |     const fetchData = useCallback(async () => {[0m
+[0m     |                                   ^^^^^^^^^^^^^[0m
+[0m> 31 |         const { data: { user } } = await supabase.auth.getUser()[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 32 |         if (!user) return[0m
+[0m     …[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 80 |         setLoading(false)[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 81 |     }, [supabase])[0m
+[0m     | ^^^^^^ Could not preserve existing manual memoization[0m
+[0m  82 |[0m
+[0m  83 |     useEffect(() => {[0m
+[0m  84 |         // eslint-disable-next-line  [2mreact-hooks/preserve-manual-memoization[22m[0m
+[0m  [2m81:8[22m   [33mwarning[39m  React Hook useCallback has a missing dependency: 'connectionsService'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\hooks\use-connections-realtime.ts[24m[0m
+[0m  [2m19:23[22m  [33mwarning[39m  'isReceiver' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m34:14[22m  [33mwarning[39m  'payload' is defined but never used              [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\lib\services\connections.service.ts[24m[0m
+[0m   [2m4:6[22m   [33mwarning[39m  'Connection' is defined but never used                                                                               [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m52:13[22m  [31merror[39m    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  [2m@typescript-eslint/ban-ts-comment[22m[0m
+[0m  [2m62:29[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m63:29[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\lib\services\profiles.service.ts[24m[0m
+[0m  [2m5:6[22m  [33mwarning[39m  'Connection' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[31m[1m✖ 9 problems (4 errors, 5 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m

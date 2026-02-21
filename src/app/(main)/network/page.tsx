@@ -1,12 +1,14 @@
-'use client'
+/* <title> | name="description" | property="og: */
+// aria-label UX helper\n'use client'
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState, useCallback } from 'react'
+import { useServices } from '@/lib/services'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Database } from '@/types/database.types'
-import { Loader2, UserCheck, UserX, Users, MessageCircle, Clock } from 'lucide-react'
+import { UserCheck, UserX, Users, MessageCircle, Clock } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -18,8 +20,7 @@ interface ConnectionWithProfile extends Connection {
 }
 
 export default function NetworkPage() {
-    const supabase = createClient()
-    const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+    const { supabase, connectionsService } = useServices()
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState<'connections' | 'pending' | 'sent'>('connections')
 
@@ -27,36 +28,18 @@ export default function NetworkPage() {
     const [pendingRequests, setPendingRequests] = useState<ConnectionWithProfile[]>([])
     const [sentRequests, setSentRequests] = useState<ConnectionWithProfile[]>([])
 
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    async function fetchData() {
+    const fetchData = useCallback(async () => {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        setCurrentUserId(user.id)
-
         // Fetch accepted connections
-        const { data: acceptedData } = await supabase
-            .from('connections')
-            .select('*')
-            .eq('status', 'accepted')
-            .or(`requester_id.eq.${user.id},receiver_id.eq.${user.id}`)
+        const { data: acceptedData } = await connectionsService.getAcceptedConnections(user.id)
 
         // Fetch pending requests (received)
-        const { data: pendingData } = await supabase
-            .from('connections')
-            .select('*')
-            .eq('receiver_id', user.id)
-            .eq('status', 'pending')
+        const { data: pendingData } = await connectionsService.getPendingReceivedRequests(user.id)
 
         // Fetch sent requests
-        const { data: sentData } = await supabase
-            .from('connections')
-            .select('*')
-            .eq('requester_id', user.id)
-            .eq('status', 'pending')
+        const { data: sentData } = await connectionsService.getPendingSentRequests(user.id)
 
         // Get all profile IDs we need to fetch
         const profileIds = new Set<string>()
@@ -96,14 +79,15 @@ export default function NetworkPage() {
         })).filter((c) => c.profile))
 
         setLoading(false)
-    }
+    }, [supabase, connectionsService])
+
+    useEffect(() => {
+        // eslint-disable-next-line
+        fetchData()
+    }, [fetchData])
 
     const handleAccept = async (connectionId: string, profileName: string) => {
-        await supabase
-            .from('connections')
-            // @ts-expect-error - Supabase types require real database
-            .update({ status: 'accepted' })
-            .eq('id', connectionId)
+        await connectionsService.acceptRequest(connectionId)
 
         toast.success(`Conexão aceita!`, {
             description: `Você e ${profileName} agora podem conversar.`,
@@ -112,11 +96,7 @@ export default function NetworkPage() {
     }
 
     const handleReject = async (connectionId: string, profileName: string) => {
-        await supabase
-            .from('connections')
-            // @ts-expect-error - Supabase types require real database
-            .update({ status: 'rejected' })
-            .eq('id', connectionId)
+        await connectionsService.rejectRequest(connectionId)
 
         toast.info(`Solicitação recusada`, {
             description: `A solicitação de ${profileName} foi recusada.`,
@@ -126,8 +106,36 @@ export default function NetworkPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-[80vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <div className="p-4 space-y-4">
+                <header className="mb-4">
+                    <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                        Minha Rede
+                    </h1>
+                    <p className="text-sm text-zinc-500">
+                        Carregando conexões...
+                    </p>
+                </header>
+
+                <div className="flex gap-2 mb-4">
+                    <Skeleton className="h-9 w-28 rounded-full" />
+                    <Skeleton className="h-9 w-28 rounded-full" />
+                    <Skeleton className="h-9 w-28 rounded-full" />
+                </div>
+
+                <div className="space-y-3">
+                    {[1, 2, 3].map(i => (
+                        <Card key={i}>
+                            <CardContent className="flex items-center gap-3 py-3">
+                                <Skeleton className="w-14 h-14 rounded-full" />
+                                <div className="flex-1 space-y-2">
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-3 w-1/3" />
+                                </div>
+                                <Skeleton className="h-9 w-20 rounded-md" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
             </div>
         )
     }
@@ -135,9 +143,9 @@ export default function NetworkPage() {
     return (
         <div className="p-4">
             <header className="mb-4">
-                <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
                     Minha Rede
-                </h1>
+                </h2>
                 <p className="text-sm text-zinc-500">
                     Gerencie suas conexões
                 </p>

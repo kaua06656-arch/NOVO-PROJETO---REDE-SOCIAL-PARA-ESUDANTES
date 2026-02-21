@@ -24,7 +24,6 @@ export default function OnboardingPage() {
 
     const [step, setStep] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
-    const [isLoadingProfile, setIsLoadingProfile] = useState(true)
 
     // Form state
     const [formData, setFormData] = useState({
@@ -50,7 +49,6 @@ export default function OnboardingPage() {
         async function loadExistingProfile() {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) {
-                setIsLoadingProfile(false)
                 return
             }
 
@@ -62,8 +60,16 @@ export default function OnboardingPage() {
 
             const profile = profileData as Profile | null
 
+            const defaultPrefs = {
+                smoker: false,
+                pets: false,
+                party: false,
+                sleep_early: false,
+                clean: false,
+            }
+
             if (profile) {
-                const prefs = profile.preferences as typeof formData.preferences | null
+                const prefs = profile.preferences as typeof defaultPrefs | null
                 setFormData({
                     full_name: profile.full_name || '',
                     university: profile.university || '',
@@ -73,16 +79,9 @@ export default function OnboardingPage() {
                     budget: profile.budget?.toString() || '',
                     bio: profile.bio || '',
                     looking_for: (profile.looking_for as 'roommate' | 'housing') || '',
-                    preferences: prefs || {
-                        smoker: false,
-                        pets: false,
-                        party: false,
-                        sleep_early: false,
-                        clean: false,
-                    },
+                    preferences: prefs || defaultPrefs,
                 })
             }
-            setIsLoadingProfile(false)
         }
 
         loadExistingProfile()

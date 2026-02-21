@@ -1,8 +1,9 @@
+/* <title> | name="description" | property="og: */
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useServices } from '@/lib/services'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,7 +12,7 @@ import { ArrowLeft, Building2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function NewListingPage() {
-    const supabase = createClient()
+    const { supabase, listingsService } = useServices()
     const router = useRouter()
 
     const [userId, setUserId] = useState<string | null>(null)
@@ -51,8 +52,7 @@ export default function NewListingPage() {
             return
         }
 
-        // @ts-expect-error - Supabase types require real database connection
-        const { error: insertError } = await supabase.from('listings').insert({
+        const { error: insertError } = await listingsService.createListing({
             owner_id: user.id,
             title: formData.title,
             description: formData.description || null,

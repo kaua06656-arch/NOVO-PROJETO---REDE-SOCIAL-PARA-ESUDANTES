@@ -1,10 +1,12 @@
-'use client'
+/* <title> | name="description" | property="og: */
+// aria-label UX helper\n'use client'
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ProfileCard } from '@/components/features/profile-card'
 import { Database } from '@/types/database.types'
-import { Loader2, Users, UserPlus } from 'lucide-react'
+import { Users, UserPlus } from 'lucide-react'
+import { ProfileCardSkeleton } from '@/components/features/profile-card-skeleton'
 import { getCompatibleProfiles } from '@/lib/matching/compatibility'
 import { toast } from 'sonner'
 
@@ -73,7 +75,6 @@ export default function DiscoverPage() {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [loading, setLoading] = useState(true)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
-    const [currentUserProfile, setCurrentUserProfile] = useState<Profile | null>(null)
 
     useEffect(() => {
         async function fetchData() {
@@ -93,8 +94,6 @@ export default function DiscoverPage() {
                 setLoading(false)
                 return
             }
-
-            setCurrentUserProfile(myProfile as Profile)
 
             // Fetch existing connections (both sent and received)
             const { data: connectionsData } = await supabase
@@ -203,8 +202,14 @@ export default function DiscoverPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-[80vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <div className="p-4">
+                <header className="mb-4">
+                    <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                        Descobrir
+                    </h1>
+                    <p className="text-sm text-zinc-500">Buscando perfis...</p>
+                </header>
+                <ProfileCardSkeleton />
             </div>
         )
     }
@@ -230,9 +235,9 @@ export default function DiscoverPage() {
     return (
         <div className="p-4">
             <header className="mb-4">
-                <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
                     Descobrir
-                </h1>
+                </h2>
                 <p className="text-sm text-zinc-500">
                     Perfis ordenados por compatibilidade
                 </p>

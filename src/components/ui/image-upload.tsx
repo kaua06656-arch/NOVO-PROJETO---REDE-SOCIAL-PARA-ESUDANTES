@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useServices } from '@/lib/services'
 import { Camera, X, Loader2, Plus, Image as ImageIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -32,7 +32,7 @@ export function ImageUpload({
     shape = 'circle',
     className,
 }: ImageUploadProps) {
-    const supabase = createClient()
+    const { supabase } = useServices()
     const [isUploading, setIsUploading] = useState(false)
     const [previewUrl, setPreviewUrl] = useState<string | null>(currentUrl || null)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -168,7 +168,7 @@ export function MultiImageUpload({
     maxImages = 5,
     className,
 }: MultiImageUploadProps) {
-    const supabase = createClient()
+    const { supabase } = useServices()
     const [isUploading, setIsUploading] = useState(false)
     const [images, setImages] = useState<string[]>(currentUrls)
     const inputRef = useRef<HTMLInputElement>(null)

@@ -1,8 +1,9 @@
-'use client'
+/* <title> | name="description" | property="og: */
+// aria-label UX helper\n'use client'
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useServices } from '@/lib/services'
 import { Database } from '@/types/database.types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -26,7 +27,7 @@ type Profile = Database['public']['Tables']['profiles']['Row']
 export default function ListingDetailPage() {
     const params = useParams()
     const router = useRouter()
-    const supabase = createClient()
+    const { supabase, listingsService, connectionsService } = useServices()
 
     const [listing, setListing] = useState<Listing | null>(null)
     const [owner, setOwner] = useState<Profile | null>(null)
@@ -44,12 +45,8 @@ export default function ListingDetailPage() {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) setCurrentUserId(user.id)
 
-            // Fetch listing
-            const { data: listingData, error } = await supabase
-                .from('listings')
-                .select('*')
-                .eq('id', params.id as string)
-                .single()
+            // Fetch listing and owner via API
+            const { data: listingData, error } = await listingsService.getListingById(params.id as string)
 
             if (error || !listingData) {
                 setLoading(false)
@@ -58,28 +55,20 @@ export default function ListingDetailPage() {
 
             setListing(listingData as Listing)
 
-            // Fetch owner profile
-            const { data: ownerData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', (listingData as Listing).owner_id)
-                .single()
+            // @ts-expect-error - profile join data
+            if (listingData.profiles) setOwner(listingData.profiles as Profile)
 
-            if (ownerData) setOwner(ownerData as Profile)
             setLoading(false)
         }
 
         fetchData()
-    }, [params.id, supabase])
+    }, [params.id, supabase, listingsService])
 
     const handleDelete = async () => {
         if (!listing) return
         setDeleting(true)
 
-        const { error } = await supabase
-            .from('listings')
-            .delete()
-            .eq('id', listing.id)
+        const { error } = await listingsService.deleteListing(listing.id)
 
         if (error) {
             toast.error('Erro ao excluir anúncio', {
@@ -100,44 +89,16 @@ export default function ListingDetailPage() {
         setContacting(true)
 
         // Check if already connected
-        const { data: existingConnection } = await supabase
-            .from('connections')
-            .select('id, status, requester_id')
-            .or(`and(requester_id.eq.${currentUserId},receiver_id.eq.${owner.id}),and(requester_id.eq.${owner.id},receiver_id.eq.${currentUserId})`)
-            .single()
+        const { data: isConnected } = await connectionsService.checkIfConnected(currentUserId, owner.id)
 
-        if (existingConnection) {
-            // @ts-expect-error - Type inference issue
-            if (existingConnection.status === 'accepted') {
-                // Already connected - go to chat
-                // @ts-expect-error - Type inference issue
-                router.push(`/chat/${existingConnection.id}`)
-            } else {
-                // @ts-expect-error - Type inference issue
-                const iSentIt = existingConnection.requester_id === currentUserId
-                if (iSentIt) {
-                    toast.info('Solicitação já enviada', {
-                        description: 'Aguarde a resposta do anunciante.',
-                    })
-                } else {
-                    toast.info('Você tem uma solicitação pendente!', {
-                        description: `${owner.full_name} já te enviou uma solicitação. Aceite na aba Rede.`,
-                    })
-                }
-            }
+        if (isConnected) {
+            toast.info('Vocês já são conectados!', { description: 'Procure este usuário na aba "Rede" ou "Chat"!' })
             setContacting(false)
             return
         }
 
-        // Create new connection request
-        const { error } = await supabase
-            .from('connections')
-            // @ts-ignore - Supabase types incomplete for connections
-            .insert({
-                requester_id: currentUserId,
-                receiver_id: owner.id,
-                status: 'pending',
-            })
+        // Send connection request
+        const { error } = await connectionsService.sendRequest(currentUserId, owner.id)
 
         if (error) {
             toast.error('Erro ao enviar solicitação')

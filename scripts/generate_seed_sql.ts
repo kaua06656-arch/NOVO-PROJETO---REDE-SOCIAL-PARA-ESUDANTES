@@ -1,16 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
-
-// You must setup these env vars for the script to run locally
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error('Missing Supabase env vars')
-    process.exit(1)
-}
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-
 /**
  * MOCK DATA GENERATOR
  * Generates profiles to test specific matching scenarios
@@ -26,63 +13,7 @@ async function seedUsers() {
     // HOWEVER, profiles table references auth.users(id). 
     // We cannot insert profiles without existing users if foreign key constraint is active.
     // WORKAROUND: We will just log the JSON data for you to copy-paste into SQL Editor
-    // OR we generate SQL insert statements.
-
-    const matches = [
-        {
-            full_name: 'Ana Perfeita (100% Match)',
-            university: 'UFPI', // Change to match your current user
-            course: 'Administração',
-            age: 20,
-            budget: 800, // Same budget
-            role: 'student',
-            city_origin: 'Teresina',
-            looking_for: 'roommate', // Same objective
-            preferences: {
-                smoker: false,
-                pets: false,
-                party: false,
-                sleep_early: true,
-                clean: true
-            },
-            bio: 'Estudante organizada procurando roommate igual.'
-        },
-        {
-            full_name: 'João Incompatível (0% Match)',
-            university: 'UESPI',
-            course: 'Direito',
-            age: 28, // Age diff > 5
-            budget: 2000, // Budget diff > 20%
-            role: 'student',
-            city_origin: 'Parnaíba',
-            looking_for: 'housing', // Different objective
-            preferences: {
-                smoker: true, // Conflict if you hate smoke
-                pets: true,
-                party: true,
-                sleep_early: false,
-                clean: false
-            },
-            bio: 'Gosto de festas e tenho 3 gatos.'
-        },
-        {
-            full_name: 'Clara Média (50% Match)',
-            university: 'Estácio', // Different uni (-8)
-            course: 'Psicologia',
-            age: 19, // Good age (+4)
-            budget: 850, // Good budget (+8)
-            role: 'student',
-            city_origin: 'Timon', // Different city (-2)
-            looking_for: 'roommate', // Good obj (+10)
-            preferences: {
-                // Mixed prefs
-                smoker: false,
-                pets: true,
-                party: true
-            },
-            bio: 'Sou tranquila mas gosto de sair às vezes.'
-        }
-    ]
+    // 
 
     console.log('\n👇 COPY AND RUN THIS SQL IN SUPABASE EDITOR TO CREATE TEST PROFILES:\n')
 

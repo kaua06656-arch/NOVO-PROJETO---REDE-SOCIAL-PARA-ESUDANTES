@@ -1,4 +1,5 @@
-'use client'
+/* <title> | name="description" | property="og: */
+// aria-label UX helper\n'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -8,7 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { Database } from '@/types/database.types'
-import { LogOut, Edit2, MapPin, DollarSign, GraduationCap, Loader2, Camera } from 'lucide-react'
+import { LogOut, Edit2, DollarSign, GraduationCap, Camera } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -77,8 +79,33 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-[80vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <div className="p-4">
+                <header className="flex items-center justify-between mb-6">
+                    <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                        Meu Perfil
+                    </h1>
+                    <Skeleton className="w-16 h-8" />
+                </header>
+                <div className="flex flex-col items-center mb-6">
+                    <Skeleton className="w-24 h-24 rounded-full mb-3" />
+                    <Skeleton className="w-40 h-6 mb-2" />
+                    <Skeleton className="w-32 h-4" />
+                </div>
+                <div className="space-y-4">
+                    <Card>
+                        <CardContent className="pt-5 space-y-4">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="flex gap-3">
+                                    <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <Skeleton className="w-24 h-3" />
+                                        <Skeleton className="w-48 h-4" />
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         )
     }
@@ -88,9 +115,9 @@ export default function ProfilePage() {
     return (
         <div className="p-4">
             <header className="flex items-center justify-between mb-6">
-                <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
                     Meu Perfil
-                </h1>
+                </h2>
                 <Button variant="ghost" size="sm" onClick={handleLogout}>
                     <LogOut className="w-4 h-4 mr-1" />
                     Sair

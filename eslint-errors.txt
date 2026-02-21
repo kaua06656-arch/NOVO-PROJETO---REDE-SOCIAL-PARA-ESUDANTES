@@ -1,0 +1,83 @@
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\scripts\generate_seed_sql.ts[24m[0m
+[0m  [2m12:7[22m   [33mwarning[39m  'supabase' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m31:11[22m  [33mwarning[39m  'matches' is assigned a value but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\chat\page.tsx[24m[0m
+[0m  [2m109:41[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\discover\page.tsx[24m[0m
+[0m  [2m76:12[22m  [33mwarning[39m  'currentUserProfile' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\listings\[id]\page.tsx[24m[0m
+[0m  [2m135:13[22m  [31merror[39m    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                                                                                                                                      [2m@typescript-eslint/ban-ts-comment[22m[0m
+[0m  [2m246:33[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\listings\page.tsx[24m[0m
+[0m  [2m9:44[22m  [33mwarning[39m  'DollarSign' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\network\page.tsx[24m[0m
+[0m   [2m22:12[22m  [33mwarning[39m  'currentUserId' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m31:9[22m   [31merror[39m    Error: Cannot access variable before it is declared[0m
+[0m[0m
+[0m`fetchData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.[0m
+[0m[0m
+[0mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\network\page.tsx:31:9[0m
+[0m  29 |[0m
+[0m  30 |     useEffect(() => {[0m
+[0m> 31 |         fetchData()[0m
+[0m     |         ^^^^^^^^^ `fetchData` accessed before it is declared[0m
+[0m  32 |     }, [])[0m
+[0m  33 |[0m
+[0m  34 |     async function fetchData() {[0m
+[0m[0m
+[0mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\network\page.tsx:34:5[0m
+[0m   32 |     }, [])[0m
+[0m   33 |[0m
+[0m>  34 |     async function fetchData() {[0m
+[0m      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m>  35 |         const { data: { user } } = await supabase.auth.getUser()[0m
+[0m      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m>  36 |         if (!user) return[0m
+[0m      …[0m
+[0m      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m>  98 |         setLoading(false)[0m
+[0m      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m>  99 |     }[0m
+[0m      | ^^^^^^ `fetchData` is declared here[0m
+[0m  100 |[0m
+[0m  101 |     const handleAccept = async (connectionId: string, profileName: string) => {[0m
+[0m  102 |         await supabase  [2mreact-hooks/immutability[22m[0m
+[0m   [2m32:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m281:21[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\(main)\profile\page.tsx[24m[0m
+[0m   [2m11:25[22m  [33mwarning[39m  'MapPin' is defined but never used                                                                                                                                                                                                                                                       [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m123:29[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\app\onboarding\page.tsx[24m[0m
+[0m  [2m27:12[22m  [33mwarning[39m  'isLoadingProfile' is assigned a value but never used                                                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m89:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'formData'. Either include it or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\components\features\profile-card.tsx[24m[0m
+[0m   [2m5:10[22m  [33mwarning[39m  'Heart' is defined but never used                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m35:21[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\components\ui\avatar.tsx[24m[0m
+[0m  [2m33:21[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\components\ui\card.tsx[24m[0m
+[0m  [2m4:11[22m  [31merror[39m  An interface declaring no members is equivalent to its supertype  [2m@typescript-eslint/no-empty-object-type[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\components\ui\image-carousel.tsx[24m[0m
+[0m  [2m45:13[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\components\ui\image-upload.tsx[24m[0m
+[0m  [2m121:21[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m  [2m239:29[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\kauad\Downloads\NOVO PROJETO - REDE SOCIAL PARA ESUDANTES\app\src\lib\supabase\middleware.ts[24m[0m
+[0m  [2m1:35[22m  [33mwarning[39m  'CookieOptions' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[31m[1m✖ 23 problems (3 errors, 20 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m

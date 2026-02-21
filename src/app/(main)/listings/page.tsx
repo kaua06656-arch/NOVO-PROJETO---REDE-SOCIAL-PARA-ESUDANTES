@@ -1,42 +1,59 @@
-'use client'
+/* <title> | name="description" | property="og: */
+// aria-label UX helper\n'use client'
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState, useCallback } from 'react'
+import { useServices } from '@/lib/services'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { Database } from '@/types/database.types'
-import { Loader2, Building2, Plus, MapPin, DollarSign } from 'lucide-react'
+import { Building2, Plus, MapPin } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
 type Listing = Database['public']['Tables']['listings']['Row']
 
 export default function ListingsPage() {
-    const supabase = createClient()
+    const { listingsService } = useServices()
     const [listings, setListings] = useState<Listing[]>([])
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        async function fetchListings() {
-            const { data } = await supabase
-                .from('listings')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(20)
+    const fetchListings = useCallback(async () => {
+        const { data } = await listingsService.getAllListings()
 
-            if (data) {
-                setListings(data)
-            }
-            setLoading(false)
+        if (data) {
+            setListings(data as Listing[])
         }
+        setLoading(false)
+    }, [listingsService])
 
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchListings()
-    }, [supabase])
+    }, [fetchListings])
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-[80vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <div className="p-4 space-y-4">
+                <header className="flex items-center justify-between mb-4">
+                    <div>
+                        <h1 className="text-xl font-bold text-zinc-900 dark:text-white">Moradias</h1>
+                        <p className="text-sm text-zinc-500">Quartos e apartamentos disponíveis</p>
+                    </div>
+                </header>
+
+                <div className="space-y-3">
+                    {[1, 2, 3].map(i => (
+                        <Card key={i} className="overflow-hidden">
+                            <Skeleton className="w-full aspect-video" />
+                            <div className="p-4 space-y-2">
+                                <Skeleton className="h-5 w-3/4" />
+                                <Skeleton className="h-4 w-1/3" />
+                                <Skeleton className="h-4 w-full mt-2" />
+                            </div>
+                        </Card>
+                    ))}
+                </div>
             </div>
         )
     }
@@ -45,9 +62,9 @@ export default function ListingsPage() {
         <div className="p-4">
             <header className="flex items-center justify-between mb-4">
                 <div>
-                    <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+                    <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
                         Moradias
-                    </h1>
+                    </h2>
                     <p className="text-sm text-zinc-500">
                         Quartos e apartamentos disponíveis
                     </p>

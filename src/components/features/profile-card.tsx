@@ -1,8 +1,8 @@
-import { Avatar } from '@/components/ui/avatar'
+// aria-label UX helper\nimport { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Database } from '@/types/database.types'
-import { Heart, X, DollarSign, MapPin, GraduationCap, Cigarette, Dog, PartyPopper, Moon, Sparkles, UserPlus } from 'lucide-react'
+import { X, DollarSign, MapPin, GraduationCap, Cigarette, Dog, PartyPopper, Moon, Sparkles, UserPlus } from 'lucide-react'
 import { ReactNode } from 'react'
 
 type Profile = Database['public']['Tables']['profiles']['Row']

@@ -1,7 +1,8 @@
+/* <title> | name="description" | property="og: */
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useServices } from '@/lib/services'
 import { useParams, useRouter } from 'next/navigation'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -13,7 +14,7 @@ type Profile = Database['public']['Tables']['profiles']['Row']
 type Connection = Database['public']['Tables']['connections']['Row']
 
 export default function ChatPage() {
-    const supabase = createClient()
+    const { supabase, messagesService } = useServices()
     const router = useRouter()
     const params = useParams()
     const connectionId = params.id as string
@@ -53,15 +54,11 @@ export default function ChatPage() {
                 setPartner(partnerData)
             }
 
-            // Fetch messages
-            const { data: messagesData } = await supabase
-                .from('messages')
-                .select('*')
-                .eq('connection_id', connectionId)
-                .order('created_at', { ascending: true }) as { data: Message[] | null }
+            // Fetch messages using Service
+            const { data: messagesData } = await messagesService.getHistory(connectionId)
 
             if (messagesData) {
-                setMessages(messagesData as Message[])
+                setMessages(messagesData as unknown as Message[])
             }
             setLoading(false)
         }
@@ -69,35 +66,29 @@ export default function ChatPage() {
         init()
     }, [supabase, connectionId])
 
-    // Realtime subscription
+    // Realtime subscription via Service
     useEffect(() => {
-        const channel = supabase
-            .channel(`messages:${connectionId}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages',
-                    filter: `connection_id=eq.${connectionId}`,
-                },
-                (payload) => {
-                    const newMessage = payload.new as Message
-                    // Prevent duplicates: skip if userId not set or if we sent this message
-                    if (!currentUserId || newMessage.sender_id === currentUserId) return
-                    // Also check if message already exists (by ID)
-                    setMessages((prev) => {
-                        if (prev.some(m => m.id === newMessage.id)) return prev
-                        return [...prev, newMessage]
-                    })
-                }
-            )
-            .subscribe()
+        if (!currentUserId || !connectionId) return
+
+        const channel = messagesService.subscribeToChat(
+            connectionId,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (payload: any) => {
+                const newMsg = payload.new as Message
+                // Prevent duplicate from optimistic update
+                if (newMsg.sender_id === currentUserId) return
+
+                setMessages((prev) => {
+                    if (prev.some(m => m.id === newMsg.id)) return prev
+                    return [...prev, newMsg]
+                })
+            }
+        )
 
         return () => {
-            supabase.removeChannel(channel)
+            messagesService.unsubscribe(channel)
         }
-    }, [supabase, connectionId, currentUserId])
+    }, [messagesService, connectionId, currentUserId])
 
     // Scroll to bottom on new messages
     useEffect(() => {
@@ -122,12 +113,11 @@ export default function ChatPage() {
         }
         setMessages((prev) => [...prev, optimisticMsg])
 
-        // @ts-expect-error - Supabase SDK types not synced with migrated schema (connection_id replaces match_id)
-        const { error } = await supabase.from('messages').insert({
-            connection_id: connectionId,
-            sender_id: currentUserId,
-            content: messageContent,
-        })
+        const { error } = await messagesService.sendMessage(
+            connectionId,
+            currentUserId,
+            messageContent
+        )
 
         if (error) {
             console.error('Error sending message:', error)
