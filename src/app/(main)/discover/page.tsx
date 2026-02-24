@@ -32,8 +32,8 @@ const MOCK_PROFILES: Profile[] = [
         preferences: { smoker: false, pets: true, party: false, sleep_early: true, clean: true },
         role: 'student',
         looking_for: 'roommate',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        created_at: '2026-01-01T00:00:00Z',
+        updated_at: '2026-01-01T00:00:00Z',
     },
     {
         id: 'mock-2',
@@ -48,8 +48,8 @@ const MOCK_PROFILES: Profile[] = [
         preferences: { smoker: false, pets: false, party: true, sleep_early: false, clean: true },
         role: 'student',
         looking_for: 'housing',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        created_at: '2026-01-01T00:00:00Z',
+        updated_at: '2026-01-01T00:00:00Z',
     },
     {
         id: 'mock-3',
@@ -64,8 +64,8 @@ const MOCK_PROFILES: Profile[] = [
         preferences: { smoker: false, pets: false, party: false, sleep_early: true, clean: true },
         role: 'student',
         looking_for: 'roommate',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        created_at: '2026-01-01T00:00:00Z',
+        updated_at: '2026-01-01T00:00:00Z',
     },
 ]
 
@@ -123,21 +123,15 @@ export default function DiscoverPage() {
 
                 // If no real profiles found, use mock profiles for demo
                 if (scored.length === 0) {
-                    const mockScored = MOCK_PROFILES.map((profile) => ({
-                        profile,
-                        compatibility: Math.floor(Math.random() * 30) + 70, // 70-100% random compatibility
-                    }))
-                    setScoredProfiles(mockScored)
+                    const mockScored = getCompatibleProfiles(myProfile as Profile, MOCK_PROFILES)
+                    setScoredProfiles(mockScored.length > 0 ? mockScored : MOCK_PROFILES.map((profile) => ({ profile, compatibility: 85 })))
                 } else {
                     setScoredProfiles(scored)
                 }
             } else {
                 // No profiles at all, use mock profiles
-                const mockScored = MOCK_PROFILES.map((profile) => ({
-                    profile,
-                    compatibility: Math.floor(Math.random() * 30) + 70,
-                }))
-                setScoredProfiles(mockScored)
+                const mockScored = getCompatibleProfiles(myProfile as Profile, MOCK_PROFILES)
+                setScoredProfiles(mockScored.length > 0 ? mockScored : MOCK_PROFILES.map((profile) => ({ profile, compatibility: 85 })))
             }
             setLoading(false)
         }
