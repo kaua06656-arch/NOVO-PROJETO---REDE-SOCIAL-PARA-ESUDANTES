@@ -10,6 +10,7 @@ import { Database } from '@/types/database.types'
 import { MessageCircle, Users } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import Image from 'next/image'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Connection = Database['public']['Tables']['connections']['Row']
@@ -148,9 +149,11 @@ export default function ChatPage() {
                             <Card className="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer">
                                 <CardContent className="flex items-center gap-3 py-3">
                                     {conn.profile.photos?.[0] ? (
-                                        <img
+                                        <Image
                                             src={conn.profile.photos[0]}
                                             alt={conn.profile.full_name || ''}
+                                            width={48}
+                                            height={48}
                                             className="w-12 h-12 rounded-full object-cover"
                                         />
                                     ) : (

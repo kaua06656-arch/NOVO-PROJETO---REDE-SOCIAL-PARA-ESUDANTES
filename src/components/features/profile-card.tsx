@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Database } from '@/types/database.types'
 import { X, DollarSign, MapPin, GraduationCap, Cigarette, Dog, PartyPopper, Moon, Sparkles, UserPlus } from 'lucide-react'
 import { ReactNode } from 'react'
+import Image from 'next/image'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -32,10 +33,13 @@ export function ProfileCard({ profile, onLike, onPass, compatibility, likeLabel 
             {/* Photo */}
             <div className="relative aspect-[3/4] bg-zinc-200 dark:bg-zinc-800">
                 {profile.photos?.[0] ? (
-                    <img
+                    <Image
                         src={profile.photos[0]}
                         alt={profile.full_name || 'Perfil'}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 400px"
+                        className="object-cover"
+                        priority
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">

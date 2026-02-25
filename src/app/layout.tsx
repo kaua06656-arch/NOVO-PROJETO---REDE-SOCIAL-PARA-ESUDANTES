@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -15,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://novo-projeto-rede-social-para-esuda.vercel.app"),
   title: "RoomiePI - Conectando Estudantes",
   description: "Encontre o colega e o local ideal para morar de forma simples e segura.",
   manifest: "/manifest.json",
@@ -23,6 +25,21 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "RoomiePI",
   },
+  openGraph: {
+    title: "RoomiePI - Conectando Estudantes",
+    description: "Encontre o colega e o local ideal para morar de forma simples e segura.",
+    type: "website",
+    locale: "pt_BR",
+    siteName: "RoomiePI",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "RoomiePI" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RoomiePI - Conectando Estudantes",
+    description: "Encontre o colega e o local ideal para morar de forma simples e segura.",
+    images: ["/og-image.png"],
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
@@ -53,6 +70,7 @@ export default function RootLayout({
         </main>
         <Toaster />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
