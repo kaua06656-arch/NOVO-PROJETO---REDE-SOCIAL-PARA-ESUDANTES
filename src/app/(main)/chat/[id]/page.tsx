@@ -8,6 +8,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Database } from '@/types/database.types'
 import { ArrowLeft, Send, Loader2 } from 'lucide-react'
+import { sanitize } from '@/lib/utils/sanitize'
 
 type Message = Database['public']['Tables']['messages']['Row']
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -99,7 +100,7 @@ export default function ChatPage() {
         e.preventDefault()
         if (!newMessage.trim() || !currentUserId) return
 
-        const messageContent = newMessage.trim()
+        const messageContent = sanitize(newMessage)
         setNewMessage('')
         setSending(true)
 
@@ -201,10 +202,7 @@ export default function ChatPage() {
                                     >
                                         {(() => {
                                             const msgDate = new Date(msg.created_at)
-                                            const today = new Date()
-                                            const isToday = msgDate.getDate() === today.getDate() &&
-                                                msgDate.getMonth() === today.getMonth() &&
-                                                msgDate.getFullYear() === today.getFullYear()
+                                            const isToday = msgDate.toDateString() === new Date().toDateString()
 
                                             if (isToday) {
                                                 return msgDate.toLocaleTimeString('pt-BR', {
@@ -215,6 +213,7 @@ export default function ChatPage() {
                                                 return msgDate.toLocaleDateString('pt-BR', {
                                                     day: '2-digit',
                                                     month: '2-digit',
+                                                }) + ', ' + msgDate.toLocaleTimeString('pt-BR', {
                                                     hour: '2-digit',
                                                     minute: '2-digit',
                                                 })
@@ -239,6 +238,7 @@ export default function ChatPage() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Digite sua mensagem..."
+                    maxLength={1000}
                     className="flex-1 h-11 px-4 rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
                 <Button

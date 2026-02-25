@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, ArrowRight, Check, Edit2 } from 'lucide-react'
 import type { Database } from '@/types/database.types'
+import { sanitize } from '@/lib/utils/sanitize'
 
 type PreferenceKey = 'smoker' | 'pets' | 'party' | 'sleep_early' | 'clean'
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -24,6 +25,7 @@ export default function EditProfilePage() {
 
     const [step, setStep] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     // Form state
     const [formData, setFormData] = useState({
@@ -106,16 +108,32 @@ export default function EditProfilePage() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
+        const age = parseInt(formData.age)
+        if (isNaN(age) || age < 16 || age > 99) {
+            setError('Idade deve ser entre 16 e 99 anos')
+            setIsLoading(false)
+            return
+        }
+
+        const budget = parseFloat(formData.budget)
+        if (formData.budget && (isNaN(budget) || budget < 0 || budget > 50000)) {
+            setError('Orçamento deve ser entre R$0 e R$50.000')
+            setIsLoading(false)
+            return
+        }
+
+        setError(null)
+
         // @ts-expect-error - Supabase types require real database connection
         await supabase.from('profiles').upsert({
             id: user.id,
-            full_name: formData.full_name,
-            university: formData.university,
-            course: formData.course,
-            age: parseInt(formData.age) || null,
-            city_origin: formData.city_origin,
-            budget: parseFloat(formData.budget) || null,
-            bio: formData.bio,
+            full_name: sanitize(formData.full_name),
+            university: sanitize(formData.university),
+            course: sanitize(formData.course),
+            age: age,
+            city_origin: sanitize(formData.city_origin),
+            budget: budget || null,
+            bio: formData.bio ? sanitize(formData.bio) : null,
             looking_for: formData.looking_for || null,
             preferences: formData.preferences,
         })
@@ -178,23 +196,29 @@ export default function EditProfilePage() {
                                     value={formData.full_name}
                                     onChange={(e) => updateField('full_name', e.target.value)}
                                     placeholder="Seu nome"
+                                    maxLength={100}
                                 />
                                 <Input
                                     label="Universidade"
                                     value={formData.university}
                                     onChange={(e) => updateField('university', e.target.value)}
                                     placeholder="Ex: UFPI, UESPI, UNINOVAFAPI..."
+                                    maxLength={100}
                                 />
                                 <Input
                                     label="Curso"
                                     value={formData.course}
                                     onChange={(e) => updateField('course', e.target.value)}
                                     placeholder="Ex: Medicina, Direito..."
+                                    maxLength={100}
                                 />
                                 <div className="grid grid-cols-2 gap-3">
                                     <Input
                                         label="Idade"
                                         type="number"
+                                        min="16"
+                                        max="99"
+                                        required
                                         value={formData.age}
                                         onChange={(e) => updateField('age', e.target.value)}
                                         placeholder="18"
@@ -202,6 +226,8 @@ export default function EditProfilePage() {
                                     <Input
                                         label="Orçamento (R$/mês)"
                                         type="number"
+                                        min="0"
+                                        max="50000"
                                         value={formData.budget}
                                         onChange={(e) => updateField('budget', e.target.value)}
                                         placeholder="800"
@@ -212,6 +238,7 @@ export default function EditProfilePage() {
                                     value={formData.city_origin}
                                     onChange={(e) => updateField('city_origin', e.target.value)}
                                     placeholder="Ex: Picos, Floriano..."
+                                    maxLength={100}
                                 />
                             </>
                         )}
@@ -264,6 +291,7 @@ export default function EditProfilePage() {
                                     value={formData.bio}
                                     onChange={(e) => updateField('bio', e.target.value)}
                                     placeholder="Sou estudante de medicina, gosto de cozinhar..."
+                                    maxLength={500}
                                 />
                             </>
                         )}
@@ -351,6 +379,10 @@ export default function EditProfilePage() {
                         </Button>
                     )}
                 </div>
+
+                {error && (
+                    <p className="text-sm text-red-500 text-center mt-3">{error}</p>
+                )}
             </div>
         </div>
     )

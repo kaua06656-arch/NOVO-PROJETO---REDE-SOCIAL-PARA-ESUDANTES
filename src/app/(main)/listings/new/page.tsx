@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MultiImageUpload } from '@/components/ui/image-upload'
 import { ArrowLeft, Building2 } from 'lucide-react'
 import Link from 'next/link'
+import { sanitize } from '@/lib/utils/sanitize'
 
 export default function NewListingPage() {
     const { supabase, listingsService } = useServices()
@@ -62,10 +63,10 @@ export default function NewListingPage() {
 
         const { error: insertError } = await listingsService.createListing({
             owner_id: user.id,
-            title: formData.title,
-            description: formData.description || null,
+            title: sanitize(formData.title),
+            description: formData.description ? sanitize(formData.description) : null,
             price: price,
-            location: formData.location || null,
+            location: formData.location ? sanitize(formData.location) : null,
             images: formData.images,
         })
 
@@ -123,6 +124,7 @@ export default function NewListingPage() {
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 placeholder="Ex: Quarto mobiliado próximo à UFPI"
                                 required
+                                maxLength={100}
                             />
                             <Input
                                 label="Preço mensal (R$)"
@@ -139,6 +141,7 @@ export default function NewListingPage() {
                                 value={formData.location}
                                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                                 placeholder="Ex: Ininga, próximo ao shopping"
+                                maxLength={200}
                             />
                             <div className="w-full">
                                 <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
@@ -149,6 +152,7 @@ export default function NewListingPage() {
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Descreva a moradia, comodidades, regras..."
                                     rows={4}
+                                    maxLength={2000}
                                     className="flex w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base transition-colors placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-500 resize-none"
                                 />
                             </div>

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, ArrowRight, Check, Home } from 'lucide-react'
 import type { Database } from '@/types/database.types'
+import { sanitize } from '@/lib/utils/sanitize'
 
 type PreferenceKey = 'smoker' | 'pets' | 'party' | 'sleep_early' | 'clean'
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -109,13 +110,13 @@ export default function OnboardingPage() {
         // @ts-expect-error - Supabase types require real database connection
         await supabase.from('profiles').upsert({
             id: user.id,
-            full_name: formData.full_name,
-            university: formData.university,
-            course: formData.course,
+            full_name: sanitize(formData.full_name),
+            university: sanitize(formData.university),
+            course: sanitize(formData.course),
             age: parseInt(formData.age) || null,
-            city_origin: formData.city_origin,
+            city_origin: sanitize(formData.city_origin),
             budget: parseFloat(formData.budget) || null,
-            bio: formData.bio,
+            bio: formData.bio ? sanitize(formData.bio) : null,
             looking_for: formData.looking_for || null,
             preferences: formData.preferences,
         })
@@ -175,23 +176,29 @@ export default function OnboardingPage() {
                                     value={formData.full_name}
                                     onChange={(e) => updateField('full_name', e.target.value)}
                                     placeholder="Seu nome"
+                                    maxLength={100}
                                 />
                                 <Input
                                     label="Universidade"
                                     value={formData.university}
                                     onChange={(e) => updateField('university', e.target.value)}
                                     placeholder="Ex: UFPI, UESPI, UNINOVAFAPI..."
+                                    maxLength={100}
                                 />
                                 <Input
                                     label="Curso"
                                     value={formData.course}
                                     onChange={(e) => updateField('course', e.target.value)}
                                     placeholder="Ex: Medicina, Direito..."
+                                    maxLength={100}
                                 />
                                 <div className="grid grid-cols-2 gap-3">
                                     <Input
                                         label="Idade"
                                         type="number"
+                                        min="16"
+                                        max="99"
+                                        required
                                         value={formData.age}
                                         onChange={(e) => updateField('age', e.target.value)}
                                         placeholder="18"
@@ -199,6 +206,8 @@ export default function OnboardingPage() {
                                     <Input
                                         label="Orçamento (R$/mês)"
                                         type="number"
+                                        min="0"
+                                        max="50000"
                                         value={formData.budget}
                                         onChange={(e) => updateField('budget', e.target.value)}
                                         placeholder="800"
@@ -209,6 +218,7 @@ export default function OnboardingPage() {
                                     value={formData.city_origin}
                                     onChange={(e) => updateField('city_origin', e.target.value)}
                                     placeholder="Ex: Picos, Floriano..."
+                                    maxLength={100}
                                 />
                             </>
                         )}
@@ -261,6 +271,7 @@ export default function OnboardingPage() {
                                     value={formData.bio}
                                     onChange={(e) => updateField('bio', e.target.value)}
                                     placeholder="Sou estudante de medicina, gosto de cozinhar..."
+                                    maxLength={500}
                                 />
                             </>
                         )}
