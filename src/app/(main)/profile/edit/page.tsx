@@ -142,15 +142,25 @@ export default function EditProfilePage() {
         router.refresh()
     }
 
-    const canProceed = () => {
+    const getStepError = (): string | null => {
         if (step === 1) {
-            return formData.full_name && formData.university && formData.age
+            if (!formData.full_name.trim()) return 'O nome é obrigatório'
+            if (!formData.university.trim()) return 'A universidade é obrigatória'
+            if (!formData.age) return 'A idade é obrigatória'
+            const age = parseInt(formData.age)
+            if (isNaN(age) || age < 16 || age > 99) return 'Idade deve ser entre 16 e 99 anos'
+            if (formData.budget) {
+                const budget = parseFloat(formData.budget)
+                if (isNaN(budget) || budget < 0 || budget > 50000) return 'Orçamento deve ser entre R$0 e R$50.000'
+            }
         }
         if (step === 3) {
-            return formData.looking_for !== ''
+            if (!formData.looking_for) return 'Selecione o que você está procurando'
         }
-        return true
+        return null
     }
+
+    const canProceed = () => !getStepError()
 
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-4">
@@ -380,8 +390,10 @@ export default function EditProfilePage() {
                     )}
                 </div>
 
-                {error && (
-                    <p className="text-sm text-red-500 text-center mt-3">{error}</p>
+                {(error || (!canProceed() && (formData.full_name || formData.age || step === 3))) && (
+                    <p className="text-sm text-red-500 text-center mt-3">
+                        {error || getStepError()}
+                    </p>
                 )}
             </div>
         </div>
