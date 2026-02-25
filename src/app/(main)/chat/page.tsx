@@ -163,7 +163,27 @@ export default function ChatPage() {
                                             </h3>
                                             {conn.lastMessage && (
                                                 <span className="text-[10px] text-zinc-400 whitespace-nowrap ml-2">
-                                                    {new Date(conn.lastMessage.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                                    {(() => {
+                                                        const msgDate = new Date(conn.lastMessage.created_at)
+                                                        const today = new Date()
+                                                        const isToday = msgDate.getDate() === today.getDate() &&
+                                                            msgDate.getMonth() === today.getMonth() &&
+                                                            msgDate.getFullYear() === today.getFullYear()
+
+                                                        if (isToday) {
+                                                            return msgDate.toLocaleTimeString('pt-BR', {
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                            })
+                                                        } else {
+                                                            return msgDate.toLocaleDateString('pt-BR', {
+                                                                day: '2-digit',
+                                                                month: '2-digit',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                            })
+                                                        }
+                                                    })()}
                                                 </span>
                                             )}
                                         </div>
