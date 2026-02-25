@@ -52,11 +52,19 @@ export default function NewListingPage() {
             return
         }
 
+        const price = parseFloat(formData.price)
+
+        if (isNaN(price) || price <= 0) {
+            setError('O preço deve ser maior que zero')
+            setIsLoading(false)
+            return
+        }
+
         const { error: insertError } = await listingsService.createListing({
             owner_id: user.id,
             title: formData.title,
             description: formData.description || null,
-            price: parseFloat(formData.price),
+            price: price,
             location: formData.location || null,
             images: formData.images,
         })
@@ -119,6 +127,8 @@ export default function NewListingPage() {
                             <Input
                                 label="Preço mensal (R$)"
                                 type="number"
+                                min="0"
+                                step="any"
                                 value={formData.price}
                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                 placeholder="800"

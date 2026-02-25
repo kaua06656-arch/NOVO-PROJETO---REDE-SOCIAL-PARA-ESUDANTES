@@ -199,10 +199,27 @@ export default function ChatPage() {
                                         className={`text-[10px] mt-1 ${isMine ? 'text-emerald-100' : 'text-zinc-400'
                                             }`}
                                     >
-                                        {new Date(msg.created_at).toLocaleTimeString('pt-BR', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                        })}
+                                        {(() => {
+                                            const msgDate = new Date(msg.created_at)
+                                            const today = new Date()
+                                            const isToday = msgDate.getDate() === today.getDate() &&
+                                                msgDate.getMonth() === today.getMonth() &&
+                                                msgDate.getFullYear() === today.getFullYear()
+
+                                            if (isToday) {
+                                                return msgDate.toLocaleTimeString('pt-BR', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                })
+                                            } else {
+                                                return msgDate.toLocaleDateString('pt-BR', {
+                                                    day: '2-digit',
+                                                    month: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                })
+                                            }
+                                        })()}
                                     </p>
                                 </div>
                             </div>
@@ -238,6 +255,6 @@ export default function ChatPage() {
                     )}
                 </Button>
             </form>
-        </div>
+        </div >
     )
 }

@@ -279,7 +279,7 @@ export default function ProfilePage() {
                     variant="secondary"
                     size="lg"
                     className="w-full mt-4"
-                    onClick={() => router.push('/onboarding')}
+                    onClick={() => router.push('/profile/edit')}
                 >
                     <Edit2 className="w-4 h-4 mr-2" />
                     Editar Perfil
