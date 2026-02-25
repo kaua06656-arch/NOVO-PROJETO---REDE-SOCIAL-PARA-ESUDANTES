@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, ArrowRight, Check, Home } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Edit2 } from 'lucide-react'
 import type { Database } from '@/types/database.types'
 
 type PreferenceKey = 'smoker' | 'pets' | 'party' | 'sleep_early' | 'clean'
@@ -18,7 +18,7 @@ const STEPS = [
     { id: 3, title: 'Objetivo' },
 ]
 
-export default function OnboardingPage() {
+export default function EditProfilePage() {
     const supabase = createClient()
     const router = useRouter()
 
@@ -139,15 +139,18 @@ export default function OnboardingPage() {
             <div className="max-w-md mx-auto">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
-                        <Home className="w-5 h-5 text-white" />
-                    </div>
+                    <button
+                        onClick={() => router.push('/profile')}
+                        className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
+                    >
+                        <ArrowLeft className="w-5 h-5 text-zinc-600 dark:text-zinc-400" />
+                    </button>
                     <div>
                         <h1 className="font-bold text-zinc-900 dark:text-white">
-                            Complete seu Perfil
+                            Editar Perfil
                         </h1>
                         <p className="text-sm text-zinc-500">
-                            Passo {step} de {STEPS.length}
+                            Edição — {STEPS[step - 1].title}
                         </p>
                     </div>
                 </div>
@@ -343,7 +346,7 @@ export default function OnboardingPage() {
                             onClick={handleSubmit}
                             isLoading={isLoading}
                         >
-                            Concluir
+                            Salvar Alterações
                             <Check className="w-4 h-4 ml-1" />
                         </Button>
                     )}
